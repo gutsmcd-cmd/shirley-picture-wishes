@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Shirley's Picture App Wish List</title>
+<meta name="robots" content="noindex">
+<style>
+:root{--pink:#e85d9a;--pinkl:#fde4ef;--green:#2e8b57;--greenl:#e3f4ea;--ink:#2b2b2b}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.5;color:var(--ink);background:linear-gradient(180deg,var(--pinkl),#fff 300px)}
+main{max-width:680px;margin:0 auto;padding:16px}
+h1{color:var(--pink);margin:.4em 0}
+h2{color:var(--green);border-bottom:3px solid var(--pink);padding-bottom:4px;margin-top:1.6em}
+.intro,.card{background:#fff;border:2px solid var(--greenl);border-radius:14px;padding:14px;margin:12px 0;box-shadow:0 1px 3px #0001}
+.card{display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:start}
+.pic{font-size:36px;line-height:52px;text-align:center;background:var(--greenl);border-radius:12px}
+.card h3{margin:0 0 4px;font-size:1.05em}
+.card p{margin:0 0 8px}
+.choices{display:flex;gap:8px;flex-wrap:wrap}
+.choices label{flex:1;min-width:80px;text-align:center;border:2px solid #ccc;border-radius:10px;padding:8px 4px;cursor:pointer;user-select:none}
+.choices input{position:absolute;opacity:0}
+.choices label:has(input:checked){border-color:var(--green);background:var(--greenl);font-weight:600}
+.choices label.no:has(input:checked){border-color:var(--pink);background:var(--pinkl)}
+.choices label:has(input:focus-visible){outline:3px solid #333}
+.opt{display:block;padding:8px;border:2px solid #ddd;border-radius:10px;margin:6px 0;cursor:pointer}
+.opt:has(input:checked){border-color:var(--green);background:var(--greenl)}
+input[type=text],textarea{width:100%;font:inherit;padding:8px;border:2px solid #ccc;border-radius:10px}
+textarea{min-height:110px}
+#send{display:block;width:100%;font:inherit;font-size:1.3em;font-weight:700;color:#fff;background:linear-gradient(90deg,var(--pink),var(--green));border:0;border-radius:16px;padding:18px;margin:24px 0 12px;cursor:pointer}
+#out{display:none}
+pre{white-space:pre-wrap;background:#fff;border:2px dashed var(--green);border-radius:12px;padding:12px;font:inherit}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btns button,.btns a{flex:1;text-align:center;font:inherit;font-weight:600;padding:12px;border-radius:12px;border:2px solid var(--green);background:var(--greenl);color:var(--ink);text-decoration:none;cursor:pointer}
+#msg{color:var(--green);font-weight:600}
+</style></head><body><main>
+<h1>🌷 Your Picture App Wish List</h1>
+<div class="intro">
+<p>Hi Mom! 💕 I'm making you a little app for making and fixing pictures.</p>
+<p>It will be <b>free</b>. No ads. No sign-in. No passwords.</p>
+<p>Please look at each idea below and tap <b>Yes</b>, <b>No</b>, or <b>Not sure</b>. There are no wrong answers. If you skip one, that's OK too.</p>
+<p>When you're done, tap the big <b>Send to Mat</b> button at the bottom. Love, Mat</p>
+</div>
+
+<h2>About you</h2>
+<div class="intro">
+<p><b>What will you use the app on?</b> Tap all that you use.</p>
+<label class="opt"><input type="checkbox" name="dev" value="Phone"> 📱 Phone</label>
+<label class="opt"><input type="checkbox" name="dev" value="Tablet"> 📲 Tablet (like an iPad)</label>
+<label class="opt"><input type="checkbox" name="dev" value="Computer"> 💻 Computer</label>
+<p style="margin-top:12px"><b>Which one will you use the most?</b></p>
+<input type="text" id="most" placeholder="Mostly my ...">
+<p style="margin-top:12px"><b>Would you like bigger buttons?</b></p>
+<div class="choices" data-q="Bigger buttons"></div>
+</div>
+
+<div id="tools"></div>
+
+<h2>Anything else?</h2>
+<div class="intro">
+<p><b>Anything else you'd like?</b> Write anything here. Ideas, worries, questions.</p>
+<textarea id="notes" placeholder="Type here (you can leave it empty)"></textarea>
+</div>
+
+<button id="send">💌 Send to Mat</button>
+<div id="out">
+<p>Here is your list. If sending did not work, tap <b>Copy</b> or <b>Email it</b>.</p>
+<pre id="list"></pre>
+<div class="btns"><button id="copy">📋 Copy</button><a id="mail" href="#">✉️ Email it</a></div>
+<p id="msg"></p>
+</div>
+</main>
+<script>
+const groups=[
+["Start a picture",[
+["📄","A blank page","Start with an empty white page, like a fresh sheet of paper, and draw on it."],
+["🖼️","Open my own photo","Pick one of your own photos from your phone, tablet or computer to change it."],
+["📷","Take a photo","Use the camera to take a new photo right inside the app."],
+["✨","Make a picture from words (AI)","Type what you want to see, like \"a cat in a garden\", and the computer draws it for you. Needs the internet. Still free."]]],
+["Draw and add",[
+["✍️","Draw with my finger or pen","Move your finger (or a pen) on the screen to draw lines, like with a crayon."],
+["🎨","Pick colors","Choose the color you draw or write with, like red, blue or pink."],
+["⭕","Shapes","Add neat circles, squares, hearts or arrows without drawing them by hand."],
+["🔤","Words","Type words onto the picture, like \"Happy Birthday!\""],
+["😊","Stickers","Add little fun pictures, like smiley faces, flowers or stars."],
+["🖼","Frames","Put a pretty border around the picture, like a picture frame."]]],
+["Fix my photo",[
+["✂️","Crop (cut the edges)","Cut off parts at the edges you don't want, to keep only the good part."],
+["🔄","Turn the picture","Spin the picture if it is sideways or upside down."],
+["☀️","Brighter or darker","Make a dark photo lighter, or a too-bright photo darker."],
+["🌈","Color filters","One tap to change the look, like old-fashioned, black and white, or warmer colors."],
+["👁️","Fix red eyes","Fix the red eyes that sometimes happen when a flash is used."],
+["🧽","Remove unwanted things","Rub out something you don't want in the photo, like a stranger or a trash can, and the app fills in the space."],
+["🌫️","Blur the background","Make the back of the photo soft and fuzzy so the person in front stands out."],
+["🔍","Make it sharper","Make a blurry or small photo look clearer."]]],
+["Finish",[
+["↩️","Undo","Made a mistake? Tap once to go back one step."],
+["💾","Save to my photos","Keep your finished picture with your other photos."],
+["📤","Share or send","Send the picture to family, like by message or email."],
+["🖨️","Print","Print the picture on paper with your printer."]]]];
+let n=0;
+function choices(el,q){el.dataset.q=q;const id="q"+(n++);
+[["Yes","yes"],["No","no"],["Not sure","ns"]].forEach(([t,c])=>{el.insertAdjacentHTML("beforeend",`<label class="${c}"><input type="radio" name="${id}" value="${t}"> ${t}</label>`)})}
+document.querySelectorAll(".choices[data-q]").forEach(e=>choices(e,e.dataset.q));
+const T=document.getElementById("tools");
+groups.forEach(([g,items])=>{T.insertAdjacentHTML("beforeend",`<h2>${g}</h2>`);
+items.forEach(([e,t,d])=>{const c=document.createElement("div");c.className="card";
+c.innerHTML=`<div class="pic" aria-hidden="true">${e}</div><div><h3>${t}</h3><p>${d}</p><div class="choices"></div></div>`;
+T.appendChild(c);choices(c.querySelector(".choices"),t)})});
+function build(){const want=[],no=[],ns=[],skip=[];let big="(not answered)";
+document.querySelectorAll(".choices").forEach(c=>{const v=(c.querySelector("input:checked")||{}).value;const q=c.dataset.q;
+if(q==="Bigger buttons"){if(v)big=v;return}
+(v==="Yes"?want:v==="No"?no:v==="Not sure"?ns:skip).push(q)});
+const dev=[...document.querySelectorAll("input[name=dev]:checked")].map(i=>i.value);
+const L=a=>a.length?a.map(x=>"- "+x).join("\n"):"- (none)";
+return `Mom's Picture App Wish List\n\nWANTED:\n${L(want)}\n\nNOT WANTED:\n${L(no)}\n\nNOT SURE:\n${L(ns)}\n\nSKIPPED:\n${L(skip)}\n\nDEVICES: ${dev.join(", ")||"(not answered)"}\nMOSTLY: ${document.getElementById("most").value.trim()||"(not answered)"}\nBIGGER BUTTONS: ${big}\n\nNOTES:\n${document.getElementById("notes").value.trim()||"(none)"}`}
+const msg=document.getElementById("msg");
+document.getElementById("send").onclick=async()=>{const t=build();
+document.getElementById("list").textContent=t;document.getElementById("out").style.display="block";
+document.getElementById("mail").href="mailto:?subject="+encodeURIComponent("My Picture App Wish List")+"&body="+encodeURIComponent(t);
+document.getElementById("out").scrollIntoView({behavior:"smooth"});
+if(navigator.share){try{await navigator.share({title:"My Picture App Wish List",text:t});msg.textContent="Sent! Thank you 💕";}catch(e){}}};
+document.getElementById("copy").onclick=async()=>{try{await navigator.clipboard.writeText(document.getElementById("list").textContent);msg.textContent="Copied! Now paste it in a message to Mat.";}catch(e){msg.textContent="Could not copy. Please press and hold the list to copy it."}};
+</script></body></html>
