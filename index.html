@@ -64,7 +64,7 @@ pre{white-space:pre-wrap;background:#fff;border:2px dashed var(--green);border-r
 <div id="out">
 <p>Here is your list. If sending did not work, tap <b>Copy</b> or <b>Email it</b>.</p>
 <pre id="list"></pre>
-<div class="btns"><button id="copy">📋 Copy</button><a id="mail" href="#">✉️ Email it</a></div>
+<div class="btns"><button id="copy">📋 Copy</button><a id="mail" href="mailto:gutsmcd@gmail.com">✉️ Email it</a></div>
 <p id="msg"></p>
 </div>
 </main>
@@ -115,7 +115,7 @@ return `Mom's Picture App Wish List\n\nWANTED:\n${L(want)}\n\nNOT WANTED:\n${L(n
 const msg=document.getElementById("msg");
 document.getElementById("send").onclick=async()=>{const t=build();
 document.getElementById("list").textContent=t;document.getElementById("out").style.display="block";
-document.getElementById("mail").href="mailto:?subject="+encodeURIComponent("My Picture App Wish List")+"&body="+encodeURIComponent(t);
+document.getElementById("mail").href="mailto:gutsmcd@gmail.com?subject="+encodeURIComponent("My Picture App Wish List")+"&body="+encodeURIComponent(t);
 document.getElementById("out").scrollIntoView({behavior:"smooth"});
 if(navigator.share){try{await navigator.share({title:"My Picture App Wish List",text:t});msg.textContent="Sent! Thank you 💕";}catch(e){}}};
 document.getElementById("copy").onclick=async()=>{try{await navigator.clipboard.writeText(document.getElementById("list").textContent);msg.textContent="Copied! Now paste it in a message to Mat.";}catch(e){msg.textContent="Could not copy. Please press and hold the list to copy it."}};
